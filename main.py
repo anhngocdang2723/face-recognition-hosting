@@ -1,28 +1,31 @@
-from fastapi import FastAPI, File, UploadFile #type: ignore
-from fastapi.responses import HTMLResponse #type: ignore
-import cv2 #type: ignore
-import numpy as np #type: ignore
+from fastapi import FastAPI, File, UploadFile
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+import cv2
+import numpy as np
+from starlette.requests import Request
 
 app = FastAPI()
 
-#đọc file
+templates = Jinja2Templates(directory="templates")
+
+#hàm đọc ảnh
 def read_image(file: UploadFile):
     image = np.fromstring(file.file.read(), np.uint8)
     return cv2.imdecode(image, cv2.IMREAD_COLOR)
 
-#hàm để nhận diện khôn mặt
+#hàm nhận diện khuôn mặt trong ảnh
 def detect_faces(image):
     face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
     return faces
 
-#hàm kiểm tra và so sánh 2 khuôn mặt
+#hàm kiểm tra và so sánh 2 ảnh
 def compare_faces(image1, image2):
-    faces1 = detect_faces(image1)  
-    faces2 = detect_faces(image2)  
+    faces1 = detect_faces(image1)
+    faces2 = detect_faces(image2)
 
-    #check xem có khuôn mặt từng ảnh hay không
     if len(faces1) == 0 and len(faces2) == 0:
         return "không tìm thấy khuôn mặt ở cả 2 ảnh"
     elif len(faces1) == 0:
@@ -30,7 +33,6 @@ def compare_faces(image1, image2):
     elif len(faces2) == 0:
         return "ảnh 2 không tìm thấy khuôn mặt"
 
-    #check khuôn mặt có phải cùng 1 người không
     if len(faces1) == len(faces2):
         return "Cùng 1 người"
     else:
@@ -45,6 +47,5 @@ async def upload_images(file1: UploadFile = File(...), file2: UploadFile = File(
     return {"result": result}
 
 @app.get("/", response_class=HTMLResponse)
-async def main():
-    with open("index.html", "r", encoding='utf-8') as f:
-        return f.read()
+async def main(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})

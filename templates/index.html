@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>So sánh khuôn mặt</title>
+    <style>
+        #result {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tải lên hai ảnh để so sánh khuôn mặt</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <label for="file1">Chọn ảnh đầu tiên:</label>
+        <input type="file" id="file1" name="file1" accept="image/*" required><br><br>
+        <label for="file2">Chọn ảnh thứ hai:</label>
+        <input type="file" id="file2" name="file2" accept="image/*" required><br><br>
+        <input type="submit" value="Gửi">
+    </form>
+    <div id="result"></div>
+    
+    <script>
+        document.getElementById('uploadForm').onsubmit = async function(event) {
+            event.preventDefault(); // Ngăn không cho form gửi theo cách mặc định
+
+            let formData = new FormData(this);
+            let response = await fetch('/upload-images', {
+                method: 'POST',
+                body: formData
+            });
+
+            let result = await response.json();
+            document.getElementById('result').textContent = result.result;
+        }
+    </script>
+</body>
+</html>
