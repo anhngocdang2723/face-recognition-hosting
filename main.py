@@ -46,5 +46,5 @@ async def upload_images(file1: UploadFile = File(...), file2: UploadFile = File(
 
 @app.get("/", response_class=HTMLResponse)
 async def main():
-    with open("static/index.html", "r", encoding='utf-8') as f:
+    with open("index.html", "r", encoding='utf-8') as f:
         return f.read()
