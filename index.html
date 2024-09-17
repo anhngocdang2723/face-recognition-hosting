@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>So sánh khuôn mặt - API đơn giản</title>
+</head>
+<body>
+    <h1>Tải lên hai ảnh để so sánh khuôn mặt</h1>
+    <form id="uploadForm" action="/upload-images" method="post" enctype="multipart/form-data">
+        <label for="file1">Chọn ảnh đầu tiên:</label>
+        <input type="file" id="file1" name="file1" accept="image/*" required><br><br>
+        <label for="file2">Chọn ảnh thứ hai:</label>
+        <input type="file" id="file2" name="file2" accept="image/*" required><br><br>
+        <input type="submit" value="Gửi">
+    </form>
+</body>
+</html>
