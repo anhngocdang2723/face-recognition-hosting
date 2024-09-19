@@ -13,6 +13,7 @@ function previewImage(input, previewId) {
     }
 }
 
+// xem ảnh trước khi gửi xử lý
 document.getElementById('file1').addEventListener('change', function() {
     previewImage(this, 'preview1');
 });
@@ -21,6 +22,7 @@ document.getElementById('file2').addEventListener('change', function() {
     previewImage(this, 'preview2');
 });
 
+// trả về kết quả sau khi xử lý
 document.getElementById('uploadForm').onsubmit = async function(event) {
     event.preventDefault();
     document.getElementById('result').textContent = "Đang xử lý...";

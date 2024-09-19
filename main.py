@@ -1,12 +1,16 @@
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import cv2
 import numpy as np
 from starlette.requests import Request
 
 app = FastAPI()
+#lấy css và js từ thư mục static
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
+#lấy template từ thư mục templates
 templates = Jinja2Templates(directory="templates")
 
 #hàm đọc ảnh
@@ -38,6 +42,7 @@ def compare_faces(image1, image2):
     else:
         return "2 người khác nhau"
 
+#route nhận ảnh và so sánh
 @app.post("/upload-images")
 async def upload_images(file1: UploadFile = File(...), file2: UploadFile = File(...)):
     image1 = read_image(file1)
@@ -46,6 +51,7 @@ async def upload_images(file1: UploadFile = File(...), file2: UploadFile = File(
     result = compare_faces(image1, image2)
     return {"result": result}
 
+#route chính render giao diện
 @app.get("/", response_class=HTMLResponse)
 async def main(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
