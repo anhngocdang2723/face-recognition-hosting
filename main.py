@@ -29,7 +29,7 @@ def detect_faces(image):
 def compare_faces(image1, image2):
     faces1 = detect_faces(image1)
     faces2 = detect_faces(image2)
-
+    
     if len(faces1) == 0 and len(faces2) == 0:
         return "không tìm thấy khuôn mặt ở cả 2 ảnh"
     elif len(faces1) == 0:
