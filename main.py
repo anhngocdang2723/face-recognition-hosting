@@ -21,8 +21,9 @@ def read_image(file: UploadFile):
 #hàm nhận diện khuôn mặt trong ảnh
 def detect_faces(image):
     face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+    #Tải mô hình Haar Cascade đã được huấn luyện để phát hiện khuôn mặt. Đường dẫn tới mô hình này được lấy từ thư viện OpenCV.
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) #chuyển sang ảnh xám để tăng tốc độ xử lý
+    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30)) 
     return faces
 
 #hàm kiểm tra và so sánh 2 ảnh
