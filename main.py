@@ -30,18 +30,40 @@ def detect_faces(image):
 def compare_faces(image1, image2):
     faces1 = detect_faces(image1)
     faces2 = detect_faces(image2)
-    
-    if len(faces1) == 0 and len(faces2) == 0:
-        return "không tìm thấy khuôn mặt ở cả 2 ảnh"
-    elif len(faces1) == 0:
-        return "ảnh 1 không tìm thấy khuôn mặt"
-    elif len(faces2) == 0:
-        return "ảnh 2 không tìm thấy khuôn mặt"
 
-    if len(faces1) == len(faces2):
+    if len(faces1) == 0:
+        return "ảnh 1 không tìm thấy khuôn mặt"
+    if len(faces2) == 0:
+        return "ảnh 2 không tìm thấy khuôn mặt"
+    
+    #cắt khuôn mặt
+    (x1, y1, w1, h1) = faces1[0]  #lấy khuôn mặt trong ảnh
+    face1 = image1[y1:y1+h1, x1:x1+w1]
+
+    (x2, y2, w2, h2) = faces2[0]  #lấy khuôn mặt trong ảnh
+    face2 = image2[y2:y2+h2, x2:x2+w2]
+    
+    #resize 2 ảnh khuôn mặt về cùng kích thước
+    face1_resized = cv2.resize(face1, (200, 200))
+    face2_resized = cv2.resize(face2, (200, 200))
+
+    # So sánh histogram của 2 ảnh khuôn mặt
+    hist1 = cv2.calcHist([face1_resized], [0], None, [256], [0, 256])
+    hist2 = cv2.calcHist([face2_resized], [0], None, [256], [0, 256])
+
+    # Chuẩn hóa histogram
+    hist1 = cv2.normalize(hist1, hist1)
+    hist2 = cv2.normalize(hist2, hist2)
+
+    # Tính độ tương đồng giữa 2 histogram bằng hàm correlation
+    similarity = cv2.compareHist(hist1, hist2, cv2.HISTCMP_CORREL)
+
+    #ngưỡng xác định cùng 1 người hay không
+    if similarity > 0.7:
         return "Cùng 1 người"
     else:
         return "2 người khác nhau"
+
 
 #route nhận ảnh và so sánh
 @app.post("/upload-images")
